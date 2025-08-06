@@ -1,11 +1,71 @@
 <template>
   <lightning-card>
+    <div class="slds-grid slds-wrap slds-gutters slds-p-around_medium">
+      <div class="slds-col slds-size_1-of-5">
+        <lightning-input
+          label="Search by User"
+          value={searchKey}
+          onchange={handleSearch}
+        >
+        </lightning-input>
+      </div>
+
+      <div class="slds-col slds-size_1-of-5">
+        <lightning-combobox
+          label="Filter by Status"
+          value={selectedStatus}
+          options={statusOptions}
+          onchange={handleStatusChange}
+        >
+        </lightning-combobox>
+      </div>
+
+      <div class="slds-col slds-size_1-of-5">
+        <lightning-input
+          type="date"
+          label="From Date"
+          value={fromDate}
+          onchange={handleFromDate}
+        >
+        </lightning-input>
+      </div>
+
+      <div class="slds-col slds-size_1-of-5">
+        <lightning-input
+          type="date"
+          label="To Date"
+          value={toDate}
+          onchange={handleToDate}
+        >
+        </lightning-input>
+      </div>
+
+      <div class="slds-col slds-size_1-of-5 slds-align-bottom">
+        <lightning-button
+          label="Apply Filters"
+          onclick={applyFilters}
+          class="slds-m-right_small"
+        >
+        </lightning-button>
+
+        <lightning-button
+          label="Clear"
+          variant="neutral"
+          onclick={clearFilters}
+        >
+        </lightning-button>
+      </div>
+    </div>
+
     <template if:true={leaverequests}>
       <lightning-datatable
         key-field="Id"
         data={leaverequests}
         columns={columns}
         onrowaction={handleRowAction}
+        enable-infinite-loading
+        onloadmore={handleLoadMore}
+        is-loading={isLoading}
       ></lightning-datatable>
     </template>
 

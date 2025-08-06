@@ -5,13 +5,16 @@
       slot="actions"
       onclick={newLeaveRequest}
       variant="border-filled"
+      alternative-text="Add New Leave Request"
     ></lightning-button-icon>
-    <template if:true={myLeaves}>
+    
+    <template lwc:if={myLeaves.length}>
       <lightning-datatable
         key-field="Id"
         data={myLeaves}
         columns={columns}
         onrowaction={handleRowAction}
+        hide-checkbox-column
       ></lightning-datatable>
     </template>
 
@@ -24,18 +27,20 @@
     </template>
   </lightning-card>
 
-  <template if:true={isEditModalOpen}>
+  <!-- Modal for New/Edit Leave Request -->
+  <template lwc:if={isEditModalOpen}>
     <section
       role="dialog"
       tabindex="-1"
       aria-modal="true"
       aria-labelledby="modal-heading-01"
-      class="slds-modal slds-fade-in-open slds-modal_small"
+      class="slds-modal slds-fade-in-open slds-modal_medium"
     >
       <div class="slds-modal__container">
         <button
           class="slds-button slds-button_icon slds-modal__close"
           onclick={closeEditModal}
+          title="Close"
         >
           <lightning-icon
             icon-name="utility:close"
@@ -45,15 +50,17 @@
           ></lightning-icon>
           <span class="slds-assistive-text">Cancel and close</span>
         </button>
+        
         <div class="slds-modal__header">
           <h1
             id="modal-heading-01"
             class="slds-modal__title slds-hyphenate"
             tabindex="-1"
           >
-            Leave Request Form
+            {modalname}
           </h1>
         </div>
+        
         <div
           class="slds-modal__content slds-p-around_medium"
           id="modal-content-id-1"
@@ -62,40 +69,63 @@
             object-api-name="Leave_Request__c"
             record-id={recordId}
             onsuccess={handleSuccess}
+            onerror={handleError}
             onsubmit={handleSubmit}
-            lwc:ref="leaveRequestForm"
           >
-            <lightning-input-field field-name="User__c" value={currentuserid}></lightning-input-field>
+            <!-- Hide User field for existing records, show for new records -->
+            <template lwc:if={recordId}>
+              <lightning-output-field 
+                field-name="User__c"
+              ></lightning-output-field>
+            </template>
+            <template lwc:else>
+              <lightning-input-field 
+                field-name="User__c" 
+                value={currentuserid}
+                disabled
+              ></lightning-input-field>
+            </template>
 
             <lightning-input-field
               field-name="FromDate__c"
+              required
             ></lightning-input-field>
 
             <lightning-input-field
               field-name="ToDate__c"
-            ></lightning-input-field>
-
-            <lightning-input-field
-              field-name="Status__c"
+              required
             ></lightning-input-field>
 
             <lightning-input-field
               field-name="Reason__c"
+              required
             ></lightning-input-field>
 
-            <lightning-button
-              variant="neutral"
-              label="Cancel"
-              onclick={closeEditModal}
-            ></lightning-button>
+            <!-- Show Status field only for existing records in edit mode -->
+            <template lwc:if={recordId}>
+              <lightning-output-field
+                field-name="Status__c"
+              ></lightning-output-field>
+              
+              <lightning-output-field
+                field-name="ManagerComment__c"
+              ></lightning-output-field>
+            </template>
 
-            <lightning-button
-              class="slds-m-top_medium"
-              type="submit"
-              label="Save"
-              variant="brand"
-            >
-            </lightning-button>
+            <div class="slds-m-top_medium">
+              <lightning-button
+                variant="neutral"
+                label="Cancel"
+                onclick={closeEditModal}
+                class="slds-m-right_small"
+              ></lightning-button>
+
+              <lightning-button
+                type="submit"
+                label="Save"
+                variant="brand"
+              ></lightning-button>
+            </div>
           </lightning-record-edit-form>
         </div>
       </div>

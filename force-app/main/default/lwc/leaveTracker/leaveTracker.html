@@ -1,14 +1,17 @@
 <template>
-  <lightning-card>
-    <lightning-tabset>
-      <lightning-tab title="My Leaves" label="My Leaves">
-        <c-my-leaves onrefreshleaverequests={handlerefreshleaverequests}></c-my-leaves>
+  <lightning-card title="Leave Management System" icon-name="utility:date_time">
+    <lightning-tabset variant="scoped">
+      <lightning-tab label="My Leaves" value="myLeaves">
+        <div class="slds-p-around_small">
+          <c-my-leaves onrefreshleaverequests={handlerefreshleaverequests}></c-my-leaves>
+        </div>
       </lightning-tab>
-      <lightning-tab title="Leave Requests" label="Leave Requests">
-        <c-leave-request  lwc:ref="myleavescomp"></c-leave-request>
+      
+      <lightning-tab label="Leave Requests" value="leaveRequests">
+        <div class="slds-p-around_small">
+          <c-leave-request></c-leave-request>
+        </div>
       </lightning-tab>
     </lightning-tabset>
   </lightning-card>
-
-
 </template>
